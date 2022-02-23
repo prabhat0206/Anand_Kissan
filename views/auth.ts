@@ -178,6 +178,7 @@ auth
     }
     const products = await Product.find({ _id: { $in: cart_ids } });
     let final_arr: any[] = [];
+    let total_price: number = 0;
     for (let index in products) {
       for (let cart_index in cart_Arr) {
         if (cart_Arr[cart_index]._id === products[index]._id.toString()) {
@@ -185,10 +186,15 @@ auth
             product: products[index],
             quantity: cart_Arr[cart_index].quantity,
           });
+          total_price +=
+            products[index].sale_price * cart_Arr[cart_index].quantity;
         }
       }
     }
-    res.json({ Success: true, cart: final_arr });
+    res.json({
+      Success: true,
+      data: { cart: final_arr, total_price: total_price },
+    });
   })
   .post(checkAuth, async (req, res) => {
     const cart_arr = res.locals.user.cart;
