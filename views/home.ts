@@ -73,7 +73,7 @@ home.get("/categories", async (req: express.Request, res: express.Response) => {
     const products = await Product.find({ category: req.query._id }).sort({
       _id: -1,
     });
-    category.products = products;
+    category = { category: category, products: products };
     return res.json({ Success: true, category: category });
   }
   const categories = await Category.find();
@@ -89,7 +89,7 @@ home.get("/brand", async (req: express.Request, res: express.Response) => {
     const products = await Product.find({ brand: req.query._id }).sort({
       _id: -1,
     });
-    brand.products = products;
+    brand = { brand: brand, product: products };
     return res.json({ Success: true, category: brand });
   }
 
