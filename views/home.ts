@@ -1,8 +1,30 @@
 import express from "express";
 import { Product, Category, Brand } from "../database/productdb";
 import { Coupon } from "../database/others";
+import Razorpay from "razorpay";
+import dotenv from "dotenv";
+
+dotenv.config();
+export const payment = new Razorpay({
+  key_id: process.env.RZ_KEY,
+  key_secret: process.env.RZ_SECRET,
+});
 
 const home = express.Router();
+
+home.get("/payment", async (req, res) => {
+  const amount = Number(req.query.amount) * 100;
+  const options = {
+    amount: amount,
+    currency: "INR",
+    receipt: "order_rcptid_11",
+  };
+  const order_id = await payment.orders.create(options);
+  res.json({
+    Success: true,
+    order_id: order_id,
+  });
+});
 
 home.get("/product", async (req: express.Request, res: express.Response) => {
   // single product view

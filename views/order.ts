@@ -2,29 +2,9 @@ import express from "express";
 import { Product } from "../database/productdb";
 import { Order, Address, User } from "../database/userdb";
 import { checkAuth } from "./auth";
-import Razorpay from "razorpay";
-import dotenv from "dotenv";
+import { payment } from "./home";
 
-dotenv.config();
 const order = express.Router();
-const payment = new Razorpay({
-  key_id: process.env.RZ_KEY,
-  key_secret: process.env.RZ_SECRET,
-});
-
-order.get("/payment/:amount", async (req, res) => {
-  const amount = Number(req.params.amount) * 100;
-  const options = {
-    amount: amount,
-    currency: "INR",
-    receipt: "order_rcptid_11",
-  };
-  const order_id = await payment.orders.create(options);
-  res.json({
-    Success: true,
-    order_id: order_id,
-  });
-});
 
 order.get("/status/:status", checkAuth, async (req, res) => {
   const status = req.params.status.toLowerCase();
