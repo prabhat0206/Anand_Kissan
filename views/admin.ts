@@ -103,8 +103,8 @@ admin
     res.json({ Success: true });
   });
 
-admin.get("/users", checkAdmin, (req, res) => {
-  const users = User.find().sort({
+admin.get("/users", checkAdmin, async (req, res) => {
+  const users = await User.find({}, { cart: 0, wishlist: 0 }).sort({
     _id: -1,
   });
   res.json({ Success: true, users: users });

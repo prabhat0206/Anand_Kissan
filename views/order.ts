@@ -115,10 +115,7 @@ order
     });
   })
   .put(checkAuth, async (req, res) => {
-    await Order.findOneAndUpdate(
-      { _id: req.query._id },
-      { status: "canceled" }
-    );
+    await Order.findOneAndUpdate({ _id: req.body._id }, { status: "canceled" });
     res.json({ Success: true });
   });
 

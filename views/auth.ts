@@ -89,10 +89,18 @@ auth.post("/register", requestAuth, async (req, res) => {
   }
 });
 
+auth.get("", checkAuth, async (req, res) => {
+  res.json({ Success: true, user: res.locals.user });
+});
+
 auth
   .route("/address")
   .get(checkAuth, async (req, res) => {
     const uid = res.locals.user.uid;
+    if (req.query._id) {
+      const address = await Address.findOne({ _id: req.query._id, uid: uid });
+      return res.json({ Success: true, address: address });
+    }
     const address = await Address.find({ uid: uid });
     res.json({
       Success: true,
@@ -116,7 +124,7 @@ auth
     });
   })
   .delete(checkAuth, async (req, res) => {
-    await Address.deleteOne({ _id: req.query._id });
+    await Address.deleteOne({ _id: req.body._id });
     res.json({ Success: true });
   });
 
@@ -131,10 +139,10 @@ auth
   })
   .post(checkAuth, async (req, res) => {
     let wishlist_arr = res.locals.user.wishlist;
-    if (wishlist_arr.includes(req.query._id)) {
+    if (wishlist_arr.includes(req.body._id)) {
       res.json({ Success: false, Error: "Product already in wishlist" });
     } else {
-      wishlist_arr.push(req.query._id);
+      wishlist_arr.push(req.body._id);
       await User.findOneAndUpdate(
         { uid: res.locals.user.uid },
         { wishlist: wishlist_arr }
@@ -144,7 +152,7 @@ auth
   })
   .delete(checkAuth, async (req, res) => {
     let wishlist = res.locals.user.wishlist;
-    if (wishlist.includes(req.query._id)) {
+    if (wishlist.includes(req.body._id)) {
       for (let index in wishlist) {
         if (wishlist[index] === req.query._id) {
           wishlist.splice(index, 1);
@@ -184,7 +192,7 @@ auth
   })
   .post(checkAuth, async (req, res) => {
     const cart_arr = res.locals.user.cart;
-    const { _id, quantity } = req.query;
+    const { _id, quantity } = req.body;
     const finded_product_index = cart_arr.findIndex(
       (item: any) => item._id === _id
     );
@@ -207,7 +215,7 @@ auth
   .delete(checkAuth, async (req, res) => {
     const cart_arr = res.locals.user.cart;
     for (let index in cart_arr) {
-      if (cart_arr[index]._id === req.query._id) {
+      if (cart_arr[index]._id === req.body._id) {
         cart_arr.splice(index, 1);
       }
     }
