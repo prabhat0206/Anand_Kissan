@@ -6,8 +6,8 @@ const home = express.Router();
 
 home.get("/product", async (req: express.Request, res: express.Response) => {
   // single product view
-  if (req.query.product_id) {
-    const product = await Product.findOne({ product_id: req.query.product_id });
+  if (req.query._id) {
+    const product = await Product.findOne({ _id: req.query._id });
     return res.json({
       Success: true,
       product_details: product,
