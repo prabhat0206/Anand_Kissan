@@ -17,6 +17,7 @@
   "scripts": {
     "start": "node index.ts",
     "dev": "nodemon index.ts",
+    "serve": "tsc index.ts -w & pm2 start dist/app.js --watch",
     "pm2": "NODE_ENV=production pm2 start server.ts --watch"
   },
   "devDependencies": {
