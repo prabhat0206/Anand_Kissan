@@ -154,7 +154,7 @@ auth
     let wishlist = res.locals.user.wishlist;
     if (wishlist.includes(req.body._id)) {
       for (let index in wishlist) {
-        if (wishlist[index] === req.query._id) {
+        if (wishlist[index] === req.body._id) {
           wishlist.splice(index, 1);
         }
       }
