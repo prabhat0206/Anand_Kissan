@@ -3,6 +3,10 @@ import { Product } from "../database/productdb";
 import { Order, Address, User } from "../database/userdb";
 import { checkAuth } from "./auth";
 import { payment } from "./home";
+import dotenv from "dotenv";
+import crypto from "crypto";
+
+dotenv.config();
 
 const order = express.Router();
 
@@ -51,7 +55,12 @@ order
         razorpay_payment_id: req.body.payment_id,
         razorpay_signature: req.body.signature,
       };
-      if ((await payment.utility.verify_payment_signature(params)) === false) {
+      const generated_signature = crypto.createHmac(
+        "sha256",
+        (params.razorpay_order_id + "|" + params.razorpay_payment_id,
+        process.env.RZ_SECRET || "")
+      );
+      if (generated_signature !== params.razorpay_signature) {
         res.json({ Success: false, Error: "Payment signature not verified" });
       } else {
         delete req.body.signature;
