@@ -1,7 +1,7 @@
 import express from "express";
 import { Product, Category, Brand } from "../database/productdb";
 import { User, Order } from "../database/userdb";
-import { Coupon } from "../database/others";
+import { Coupon, Notification } from "../database/others";
 
 const admin = express.Router();
 
@@ -146,5 +146,15 @@ admin
     await Coupon.deleteOne({ _id: req.query._id });
     res.json({ Success: true });
   });
+
+admin.post("/post_notification", checkAdmin, async (req, res) => {
+  const order = await Order.findOne({ _id: req.body._id });
+  await Notification.create({
+    uid: order.uid,
+    message: req.body.message,
+    datetime: Date.now(),
+  });
+  res.json({ Success: true });
+});
 
 export default admin;

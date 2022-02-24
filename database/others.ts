@@ -5,4 +5,11 @@ const CouponSchema = new mongoose.Schema({
   percentage: String,
 });
 
+const NotificationSchema = new mongoose.Schema({
+  uid: String,
+  datetime: String,
+  message: String,
+});
+
 export const Coupon = mongoose.model("Coupon", CouponSchema);
+export const Notification = mongoose.model("Notification", NotificationSchema);

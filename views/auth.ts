@@ -1,6 +1,7 @@
 import express from "express";
 import { User, Address } from "../database/userdb";
 import { Product } from "../database/productdb";
+import { Notification } from "../database/others";
 
 const auth = express.Router();
 
@@ -231,5 +232,12 @@ auth
     );
     res.json({ Success: true });
   });
+
+auth.get("/notifications", checkAuth, async (req, res) => {
+  const notifications = await Notification.find({
+    uid: res.locals.user.uid,
+  }).sort({ _id: -1 });
+  return res.json({ Success: true, notifications: notifications });
+});
 
 export default auth;
