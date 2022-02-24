@@ -54,14 +54,11 @@ order
         razorpay_payment_id: req.body.payment_id,
         razorpay_signature: req.body.signature,
       };
+
       const generated_signature = crypto
-        .createHmac(
-          "sha256",
-          (params.razorpay_order_id + "|" + params.razorpay_payment_id,
-          process.env.RZ_SECRET || "")
-        )
-        .update("json")
-        .digest("base64");
+        .createHmac("sha256", process.env.RZ_SECRET || "")
+        .update(params.razorpay_order_id + "|" + params.razorpay_payment_id)
+        .digest("hex");
       if (generated_signature !== params.razorpay_signature) {
         return res.json({
           Success: false,
