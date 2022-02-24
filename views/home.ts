@@ -109,4 +109,10 @@ home.get("/coupon", async (req, res) => {
   res.json({ Success: true, coupons: coupons });
 });
 
+home.get("/search", async (req, res) => {
+  const key = req.query.q || "none";
+  const products = await Product.find({ $text: { $search: key.toString() } });
+  res.json({ Success: true, products: products });
+});
+
 export default home;

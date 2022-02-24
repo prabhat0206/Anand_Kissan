@@ -25,6 +25,8 @@ const ProductSchema = new mongoose.Schema({
   quantity: String,
 });
 
+ProductSchema.index({ "$**": "text" });
+
 export const Category = mongoose.model("Category", CategorySchema);
 export const Brand = mongoose.model("Brand", BrandSchema);
 export const Product = mongoose.model("Product", ProductSchema);
