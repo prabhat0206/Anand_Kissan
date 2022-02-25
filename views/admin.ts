@@ -139,6 +139,9 @@ admin
     res.json({ Success: true, coupons: coupons });
   })
   .post(checkAdmin, async (req, res) => {
+    if (await Coupon.findOne({ coupon_id: req.query.coupon_id })) {
+      return res.json({ Success: false, Error: "Coupon already exists" });
+    }
     await Coupon.create(req.body);
     res.json({ Success: true });
   })

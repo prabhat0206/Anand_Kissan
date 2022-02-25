@@ -102,7 +102,7 @@ home.get("/brand", async (req: express.Request, res: express.Response) => {
 
 home.get("/coupon", async (req, res) => {
   if (req.query._id) {
-    const coupon = await Coupon.findOne({ _id: req.query._id });
+    const coupon = await Coupon.findOne({ coupon_id: req.query._id });
     return res.json({ Success: true, coupon: coupon });
   }
   const coupons = await Coupon.find();
