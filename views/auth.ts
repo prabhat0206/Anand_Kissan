@@ -208,11 +208,11 @@ auth
         cart_arr.splice(finded_product_index, 1);
       } else {
         cart_arr[finded_product_index].quantity = quantity;
-        await User.findOneAndUpdate(
-          { uid: res.locals.user.uid },
-          { cart: cart_arr }
-        );
       }
+      await User.findOneAndUpdate(
+        { uid: res.locals.user.uid },
+        { cart: cart_arr }
+      );
       res.json({ Success: true });
     } else {
       cart_arr.push({ _id: _id, quantity: quantity });
