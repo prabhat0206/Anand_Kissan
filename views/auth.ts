@@ -204,11 +204,15 @@ auth
       (item: any) => item._id === _id
     );
     if (finded_product_index !== -1) {
-      cart_arr[finded_product_index].quantity = quantity;
-      await User.findOneAndUpdate(
-        { uid: res.locals.user.uid },
-        { cart: cart_arr }
-      );
+      if (quantity === 0) {
+        cart_arr.splice(finded_product_index, 1);
+      } else {
+        cart_arr[finded_product_index].quantity = quantity;
+        await User.findOneAndUpdate(
+          { uid: res.locals.user.uid },
+          { cart: cart_arr }
+        );
+      }
       res.json({ Success: true });
     } else {
       cart_arr.push({ _id: _id, quantity: quantity });
