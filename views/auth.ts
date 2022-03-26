@@ -42,9 +42,9 @@ export const checkAuth = async (
 };
 
 auth.get("/check/:ph_number", requestAuth, async (req, res) => {
-  const uid = req.params.ph_number;
-  if (uid) {
-    const user = await User.findOne({ uid: uid });
+  const ph_number = req.params.ph_number;
+  if (ph_number) {
+    const user = await User.findOne({ ph_number: ph_number });
     if (user) {
       res.json({ Success: true });
     } else {
