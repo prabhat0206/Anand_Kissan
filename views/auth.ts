@@ -2,7 +2,11 @@ import express from "express";
 import { User, Address } from "../database/userdb";
 import { Product } from "../database/productdb";
 import { Notification } from "../database/others";
+import axios from "axios";
+import { config } from "dotenv";
+import jwt from "jsonwebtoken";
 
+config();
 const auth = express.Router();
 
 const requestAuth = (
@@ -29,16 +33,39 @@ export const checkAuth = async (
 ) => {
   const token = req.headers.authorization?.replace("Bearer ", "");
   if (token) {
-    const user = await User.findOne({ token: token });
-    if (user) {
-      res.locals.user = user;
-      next();
-    } else {
-      res.sendStatus(401);
-    }
+    jwt.verify(token, process.env.SECRET_KEY || "", async (err, user) => {
+      if (err) {
+        return res.sendStatus(403);
+      } else {
+        const { uid }: any = user;
+        const user_from_db = await User.findOne({ uid: uid });
+        res.locals.user = user_from_db;
+        next();
+      }
+    });
   } else {
     res.sendStatus(401);
   }
+};
+
+const getOTP = () => {
+  let otp = "";
+  for (let i = 0; i < 6; i++) {
+    otp += Math.floor(Math.random() * 9 + 1).toString();
+  }
+  return otp;
+};
+
+const sendSMS = async (ph_number: number, name: string, otp: string) => {
+  const message = `Dear ${name}, Please use this OTP-${otp}. Thank you for registration Anand Kisan`;
+  const apiKey = `b6c97c84-8f6b-4a05-83e9-98c60085fa89`;
+  const username = `VIITOR`;
+  const senderName = `VIITOR`;
+  const url = `http://msg.viitortechnologies.com/sendSMS?username=${username}&message=${message}&sendername=${senderName}&smstype=TRANS&numbers=${ph_number}&apikey=${apiKey}`;
+  return await axios
+    .get(url)
+    .then((res) => res.data)
+    .catch((err) => err);
 };
 
 auth.get("/check/:ph_number", requestAuth, async (req, res) => {
@@ -55,38 +82,68 @@ auth.get("/check/:ph_number", requestAuth, async (req, res) => {
   }
 });
 
-auth.post("/login", requestAuth, async (req, res) => {
-  const { ph_number, token } = req.body;
-  const user = await User.findOneAndUpdate(
-    { ph_number: ph_number },
-    { token: token }
-  );
+auth.post("/verifyOtp", async (req, res) => {
+  const { otp, ph_number } = req.body;
+  const user = await User.findOne({ ph_number: ph_number });
+  if (Number(user.last_otp) === Number(otp)) {
+    const { ph_number, uid, name } = user;
+    const accessToken = jwt.sign(
+      { ph_number: ph_number, uid: uid, name: name },
+      process.env.SECRET_KEY || ""
+    );
+    return res.json({ success: true, accessToken: accessToken });
+  } else {
+    return res.json({ success: false });
+  }
+});
+
+auth.post("/resend", async (req, res) => {
+  const { ph_number } = req.body;
+  const user = await User.findOne({ ph_number: ph_number });
   if (user) {
+    await sendSMS(Number(user.ph_number), user.name, user.last_otp);
+    res.json({ success: true });
+  } else {
+    res.json({ success: false });
+  }
+});
+
+auth.post("/login", requestAuth, async (req, res) => {
+  const { ph_number } = req.body;
+  const otp = getOTP();
+  const user = await User.findOne({ ph_number: ph_number });
+  if (user) {
+    await User.findOneAndUpdate({ ph_number: ph_number }, { last_otp: otp });
+    const response = await sendSMS(Number(user.ph_number), user.name, otp);
     res.json({
       isUser: true,
-      user: user,
+      success: response.length > 0 ? true : false,
     });
   } else {
-    res.sendStatus(401);
+    res.json({
+      isUser: false,
+      success: false,
+    });
   }
 });
 
 auth.post("/register", requestAuth, async (req, res) => {
-  const { ph_number, name, token } = req.body;
+  const { ph_number, name } = req.body;
   const exist_user = await User.findOne({ ph_number: ph_number });
   if (!exist_user) {
-    const new_user = await User.create({
+    const otp = getOTP();
+    await User.create({
       uid: Date.now() + ph_number.slice(0, 4),
       ph_number: ph_number,
       name: name,
-      token: token,
+      last_otp: otp,
     });
+    await sendSMS(Number(ph_number), name, otp);
     res.json({
-      Success: true,
-      user: new_user,
+      success: true,
     });
   } else {
-    res.json({ Success: false, Error: "User already exists" });
+    res.json({ success: false, Error: "User already exists" });
   }
 });
 

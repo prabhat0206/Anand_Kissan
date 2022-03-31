@@ -7,6 +7,7 @@ import home from "./views/home";
 import order from "./views/order";
 
 config();
+
 const app = express();
 app.use(bodyParser.json());
 

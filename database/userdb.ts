@@ -4,7 +4,7 @@ const UserSchema = new mongoose.Schema({
   uid: String,
   name: String,
   ph_number: String,
-  token: String,
+  last_otp: String,
   cart: [
     {
       _id: String,
