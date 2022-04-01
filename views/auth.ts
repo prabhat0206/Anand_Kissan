@@ -4,6 +4,7 @@ import { Product } from "../database/productdb";
 import { Notification } from "../database/others";
 import axios from "axios";
 import { config } from "dotenv";
+import crypto from "crypto"
 import jwt from "jsonwebtoken";
 
 config();
@@ -128,7 +129,7 @@ auth.post("/login", requestAuth, async (req, res) => {
 });
 
 auth.post("/register", requestAuth, async (req, res) => {
-  const { ph_number, name, token } = req.body;
+  const { ph_number, name } = req.body;
   const exist_user = await User.findOne({ ph_number: ph_number });
   if (!exist_user) {
     const otp = getOTP();
@@ -136,7 +137,7 @@ auth.post("/register", requestAuth, async (req, res) => {
       uid: Date.now() + ph_number.slice(0, 4),
       ph_number: ph_number,
       name: name,
-      token: token,
+      token: crypto.randomBytes(64).toString('hex'),
       last_otp: otp,
     });
     await sendSMS(Number(ph_number), name, otp);
