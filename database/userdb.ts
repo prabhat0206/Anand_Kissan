@@ -5,6 +5,7 @@ const UserSchema = new mongoose.Schema({
   name: String,
   ph_number: String,
   last_otp: String,
+  token: String,
   cart: [
     {
       _id: String,
