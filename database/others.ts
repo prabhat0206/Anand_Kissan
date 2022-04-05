@@ -11,5 +11,10 @@ const NotificationSchema = new mongoose.Schema({
   message: String,
 });
 
+const BannerSchema = new mongoose.Schema({
+  url: String,
+})
+
 export const Coupon = mongoose.model("Coupon", CouponSchema);
 export const Notification = mongoose.model("Notification", NotificationSchema);
+export const Banner = mongoose.model("Banner", BannerSchema);

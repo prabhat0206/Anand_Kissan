@@ -1,7 +1,7 @@
 import express from "express";
 import { Product, Category, Brand } from "../database/productdb";
 import { User, Order } from "../database/userdb";
-import { Coupon, Notification } from "../database/others";
+import { Coupon, Notification, Banner } from "../database/others";
 
 const admin = express.Router();
 
@@ -24,6 +24,11 @@ const checkAdmin = (
     res.sendStatus(401);
   }
 };
+
+admin.get("/products/:id", async (req, res) => {
+  const products = await Product.find({ category: req.params.id });
+  return res.json({Success: true, products: products})
+});
 
 admin
   .route("/category")
@@ -159,5 +164,20 @@ admin.post("/post_notification", checkAdmin, async (req, res) => {
   });
   res.json({ Success: true });
 });
+
+admin
+  .route("/banner")
+  .get(async (req, res) => {
+    const banners = await Banner.find().sort({ _id: -1 });
+    res.json({ Success: true, banners: banners });
+  })
+  .post(async (req, res) => {
+    await Banner.create(req.query);
+    res.json({ Success: true });
+  })
+  .delete(async (req, res) => {
+    await Banner.deleteOne(req.query);
+    res.json({ Success: true });
+  });
 
 export default admin;
