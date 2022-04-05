@@ -25,9 +25,11 @@ const checkAdmin = (
   }
 };
 
-admin.get("/products/:id", async (req, res) => {
-  const products = await Product.find({ category: req.params.id });
-  return res.json({Success: true, products: products})
+admin.get("/products", async (req, res) => {
+  const products = await Product.find({ category: req.query.id }).sort({
+    _id: -1,
+  });
+  return res.json({ Success: true, products: products });
 });
 
 admin
