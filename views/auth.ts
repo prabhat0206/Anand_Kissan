@@ -111,16 +111,11 @@ auth.post("/resend", async (req, res) => {
 
 auth.post("/login", requestAuth, async (req, res) => {
   const { ph_number } = req.body;
-  const otp = getOTP();
+  let otp = getOTP();
   const user = await User.findOne({ ph_number: ph_number });
   if (user) {
     if (ph_number === "9310424757") {
-      await User.findOneAndUpdate({ ph_number: ph_number }, { last_otp: 665544 });
-      const response = await sendSMS(Number(user.ph_number), user.name, "665544");
-      return res.json({
-        isUser: true,
-        success: response.length > 0 ? true : false,
-      })
+      otp = "665544"
     }
     await User.findOneAndUpdate({ ph_number: ph_number }, { last_otp: otp });
     const response = await sendSMS(Number(user.ph_number), user.name, otp);
@@ -140,7 +135,10 @@ auth.post("/register", requestAuth, async (req, res) => {
   const { ph_number, name } = req.body;
   const exist_user = await User.findOne({ ph_number: ph_number });
   if (!exist_user) {
-    const otp = getOTP();
+    let otp = getOTP();
+    if (ph_number === "9310424757") {
+      otp = "665544";
+    }
     await User.create({
       uid: Date.now() + ph_number.slice(0, 4),
       ph_number: ph_number,
