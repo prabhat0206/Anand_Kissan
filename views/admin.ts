@@ -25,6 +25,17 @@ const checkAdmin = (
   }
 };
 
+admin.get("/status/:status", async (req, res) => {
+  const status = req.params.status.toLowerCase();
+  const orders = await Order.find({
+    status: status,
+  }).sort({ _id: -1 });
+  res.json({
+    Success: true,
+    orders: orders,
+  });
+});
+
 admin.get("/products", async (req, res) => {
   const products = await Product.find({ category: req.query.id }).sort({
     _id: -1,
