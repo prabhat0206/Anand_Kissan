@@ -193,7 +193,7 @@ admin
     res.json({ Success: true });
   });
 
-admin.put("/change_condition", async (req, res) => {
+admin.post("/change_condition", checkAdmin, async (req, res) => {
   const condition = req.query;
   const key = Object.keys(condition)[1];
   const value = condition[key[1]] === "0" ? false : true;
