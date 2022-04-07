@@ -196,6 +196,8 @@ admin
 admin.post("/change_condition", checkAdmin, async (req, res) => {
   const condition = req.query;
   const key = Object.keys(condition)[1];
+  console.log(condition[key])
+  console.log(key)
   const value = Number(condition[key]) === 0 ? false : true;
   await Product.findOneAndUpdate({ _id: condition._id }, { key: value })
   return res.json({
