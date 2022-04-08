@@ -94,6 +94,7 @@ order
         }
       }
     }
+    console.log(new_product_Arr)
     req.body.total_amount = total_amount;
     req.body.products = new_product_Arr;
     req.body.status = "order placed";
