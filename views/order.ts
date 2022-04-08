@@ -78,7 +78,7 @@ order
     delete address.uid;
     req.body.address = address;
     const products: any[] = await Product.find({ _id: { $in: product_ids } });
-    const new_product_Arr: OrderProductT[] = [];
+    let new_product_Arr: OrderProductT[] = [];
     for (let qindex in products) {
       for (let pindex in product_arr) {
         if (products[qindex]._id.toString() === product_arr[pindex]._id) {
