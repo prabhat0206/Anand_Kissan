@@ -48,7 +48,6 @@ order
     });
   })
   .post(checkAuth, async (req, res) => {
-    console.log(req.body)
     if (req.body.payment_method !== "COD") {
       const params = {
         razorpay_order_id: req.body.order_id,
@@ -95,7 +94,6 @@ order
         }
       }
     }
-    console.log(new_product_Arr)
     req.body.total_amount = total_amount;
     req.body.products = new_product_Arr;
     req.body.status = "order placed";
