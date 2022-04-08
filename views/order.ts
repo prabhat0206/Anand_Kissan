@@ -83,7 +83,6 @@ order
     for (let qindex in products) {
       for (let pindex in product_arr) {
         if (products[qindex]._id.toString() === product_arr[pindex]._id) {
-          console.log(product_arr[pindex], products[qindex])
           new_product_Arr.push({
             _id: products[qindex]._id,
             name: products[qindex].name,
