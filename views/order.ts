@@ -4,6 +4,7 @@ import { Order, Address, User } from "../database/userdb";
 import { checkAuth } from "./auth";
 import dotenv from "dotenv";
 import crypto from "crypto";
+import moment from "moment";
 
 dotenv.config();
 
@@ -97,7 +98,7 @@ order
     req.body.total_amount = total_amount;
     req.body.products = new_product_Arr;
     req.body.status = "order placed";
-    req.body.date = Date.now();
+    req.body.date = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss");
     req.body.uid = res.locals.user.uid;
     await Order.create(req.body);
     await User.findOneAndUpdate({ uid: res.locals.user.uid }, { cart: [] });
