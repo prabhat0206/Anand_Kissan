@@ -6,5 +6,6 @@ namespace NodeJS {
     RZZ_KEY: string;
     RZ_SECRET: string;
     SECRET_KEY: string;
+    MONGO_DB_URI: string;
   }
 }
