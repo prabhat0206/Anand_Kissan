@@ -66,6 +66,7 @@ admin
   })
   .delete(checkAdmin, async (req, res) => {
     await Category.deleteOne({ _id: req.query._id });
+    await Product.deleteMany({ category: req.query._id })
     res.json({ Success: true });
   });
 

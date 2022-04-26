@@ -90,15 +90,16 @@ order
             price: products[qindex].sale_price,
             quantity: product_arr[pindex].quantity,
           });
-          total_amount +=
-            products[qindex].sale_price * product_arr[pindex].quantity;
+          total_amount += products[qindex].sale_price * product_arr[pindex].quantity;
+          const available_stock = products[qindex].in_stock - product_arr[pindex].quantity;
+          await Product.findOneAndUpdate({ _id: products[qindex]._id}, {in_stock: available_stock})
         }
       }
     }
     req.body.total_amount = total_amount;
     req.body.products = new_product_Arr;
     req.body.status = "order placed";
-    req.body.date = moment().utcOffset("+05:30").format("YYYY-MM-DD HH:mm:ss");
+    req.body.date = moment().utcOffset("+05:30").format("YYYY-MM-DD hh:mm:ss a");
     req.body.uid = res.locals.user.uid;
     await Order.create(req.body);
     await User.findOneAndUpdate({ uid: res.locals.user.uid }, { cart: [] });

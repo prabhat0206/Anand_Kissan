@@ -23,6 +23,7 @@ const ProductSchema = new mongoose.Schema({
   sale_price: Number,
   in_stock: Number,
   quantity: String,
+  technical: String,
 });
 
 ProductSchema.index({ "$**": "text" });
