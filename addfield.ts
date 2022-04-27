@@ -1,8 +1,10 @@
 import {Product} from "./database/productdb"
 
 const createFieldInExistModel = async () => {
-
-   return await Product.updateMany({$set: {technical: ""}})
+    const products = await Product.find()
+    for (let product of products) {
+        await Product.updateOne({$set: {technical: ""}})
+    }
 }
 
 createFieldInExistModel()
