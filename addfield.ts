@@ -1,7 +1,8 @@
 import {Product} from "./database/productdb"
 
-const createFieldInExistModel = () => {
-   return Product.updateMany({$set: {technical: ""}})
+const createFieldInExistModel = async () => {
+
+   return await Product.updateMany({$set: {technical: ""}})
 }
 
 createFieldInExistModel()
