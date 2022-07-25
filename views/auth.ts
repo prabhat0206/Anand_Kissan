@@ -59,7 +59,7 @@ const getOTP = () => {
 
 const sendSMS = async (ph_number: number, name: string, otp: string) => {
   const message = `Dear ${name}, Please use this OTP-${otp}. Thank you for registration Anand Kisan`;
-  const apiKey = `b6c97c84-8f6b-4a05-83e9-98c60085fa89`;
+  const apiKey = ``;
   const username = `VIITOR`;
   const senderName = `VIITOR`;
   const url = `http://msg.viitortechnologies.com/sendSMS?username=${username}&message=${message}&sendername=${senderName}&smstype=TRANS&numbers=${ph_number}&apikey=${apiKey}`;
